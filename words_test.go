@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"testing"
 
 	"github.com/stretchr/testify/assert"
@@ -25,4 +26,24 @@ func TestWordsMultipleMatches(t *testing.T) {
 	assert.Contains(t, s, "deaf")
 	assert.Contains(t, s, "fade")
 	assert.Contains(t, s, "faded")
+}
+
+func TestWordsMultipleMatchesJson(t *testing.T) {
+	s := GetMatchingWordsResponse("adefpei", 'a') //expects [add added dad dead deaf fade faded]
+	var r Response
+	json.Unmarshal([]byte(s), &r)
+
+	assert.Equal(t, r.Letters, "adefpei")
+	assert.Equal(t, r.MandatoryLetter, "a")
+	assert.GreaterOrEqual(t, r.ExecutionTimeMs, 0)
+	assert.Equal(t, len(r.Words), 7)
+	assert.Contains(t, r.Words, "added")
+	assert.Contains(t, r.Words, "add")
+	assert.Contains(t, r.Words, "dad")
+	assert.Contains(t, r.Words, "dead")
+	assert.Contains(t, r.Words, "deaf")
+	assert.Contains(t, r.Words, "fade")
+	assert.Contains(t, r.Words, "faded")
+
+	//	fmt.Println(s)
 }

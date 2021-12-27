@@ -2,11 +2,21 @@ package main
 
 import (
 	"bufio"
+	"encoding/json"
 	"fmt"
 	"os"
 	"sort"
 	"strings"
+	"time"
 )
+
+type Response struct {
+	Letters         string
+	Words           []string
+	MandatoryLetter string
+	ExecutionTimeMs int
+	Created         time.Time
+}
 
 func check(e error) {
 	if e != nil {
@@ -19,6 +29,24 @@ func main() {
 	//dat, err := os.Open("./short.txt")
 
 	fmt.Println(GetMatchingWords("wniougk", 'w'))
+	fmt.Println(GetMatchingWordsResponse("wniougk", 'w'))
+
+}
+func GetMatchingWordsResponse(letters string, mandatoryChar rune) string {
+	start := time.Now()
+	words := GetMatchingWords(letters, mandatoryChar)
+	response := Response{
+		Letters:         letters,
+		MandatoryLetter: string(mandatoryChar),
+		Words:           words,
+		Created:         time.Now(),
+		ExecutionTimeMs: int(time.Since(start).Milliseconds()),
+	}
+	j, err := json.Marshal(response)
+	check(err)
+
+	//fmt.Println(string(j))
+	return string(j)
 
 }
 
