@@ -8,16 +8,26 @@ import (
 )
 
 func TestWordsNoMatch(t *testing.T) {
-	s := GetMatchingWords("zxq", 'z')
+	s, err := GetMatchingWords("zxqwvrt", 'z')
+	assert.Nil(t, err)
 	assert.Equal(t, len(s), 0)
 }
 
-func TestWordsOneMatch(t *testing.T) {
-	s := GetMatchingWords("zo", 'z') //expects [zoo]
-	assert.Equal(t, len(s), 1)
+func TestErrorIfNot7Chars(t *testing.T) {
+	s, err := GetMatchingWords("zo", 'z') //expects error
+	assert.NotNil(t, err)
+	assert.Nil(t, s)
 }
+
+func TestErrorIfNotMandatoryCharContainedInLetters(t *testing.T) {
+	s, err := GetMatchingWords("abcdefg", 'z')
+	assert.NotNil(t, err)
+	assert.Nil(t, s)
+}
+
 func TestWordsMultipleMatches(t *testing.T) {
-	s := GetMatchingWords("adefpei", 'a') //expects [add added dad dead deaf fade faded]
+	s, err := GetMatchingWords("adefpei", 'a') //expects [add added dad dead deaf fade faded]
+	assert.Nil(t, err)
 	assert.Equal(t, len(s), 7)
 	assert.Contains(t, s, "added")
 	assert.Contains(t, s, "add")
@@ -44,6 +54,4 @@ func TestWordsMultipleMatchesJson(t *testing.T) {
 	assert.Contains(t, r.Words, "deaf")
 	assert.Contains(t, r.Words, "fade")
 	assert.Contains(t, r.Words, "faded")
-
-	//	fmt.Println(s)
 }

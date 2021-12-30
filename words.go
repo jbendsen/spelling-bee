@@ -3,9 +3,11 @@ package main
 import (
 	"bufio"
 	"encoding/json"
+	"errors"
 	"fmt"
 	"os"
 	"sort"
+	"strconv"
 	"strings"
 	"time"
 )
@@ -24,7 +26,7 @@ func check(e error) {
 	}
 }
 
-func main() {
+func main_old() {
 	fmt.Println(uniqueLettersSorted("Starting"))
 	//dat, err := os.Open("./short.txt")
 
@@ -34,7 +36,7 @@ func main() {
 }
 func GetMatchingWordsResponse(letters string, mandatoryChar rune) string {
 	start := time.Now()
-	words := GetMatchingWords(letters, mandatoryChar)
+	words, err := GetMatchingWords(letters, mandatoryChar)
 	response := Response{
 		Letters:         letters,
 		MandatoryLetter: string(mandatoryChar),
@@ -50,9 +52,22 @@ func GetMatchingWordsResponse(letters string, mandatoryChar rune) string {
 
 }
 
-func GetMatchingWords(letters string, mandatoryChar rune) []string {
-	dat, err := os.Open("./corncob_lowercase.txt")
-	check(err)
+func GetMatchingWords(letters string, mandatoryChar rune) ([]string, error) {
+	root := "."
+	if os.Getenv("LAMBDA_TASK_ROOT") != "" {
+		root = os.Getenv("LAMBDA_TASK_ROOT")
+	}
+	fn := root + "/corncob_lowercase.txt"
+	err := verify(letters, mandatoryChar)
+	if err != nil {
+		return nil, err
+	}
+
+	dat, err := os.Open(fn) //"./corncob_lowercase.txt")
+
+	if err != nil {
+		return nil, errors.New("could not open dictionary. cause:" + err.Error())
+	}
 
 	s := make([]string, 0)
 
@@ -78,7 +93,20 @@ func GetMatchingWords(letters string, mandatoryChar rune) []string {
 			}
 		}
 	}
-	return result
+	return result, nil
+}
+
+/* verifies preconditions */
+func verify(letters string, mandatoryChar rune) error {
+	if len(letters) != 7 {
+		return errors.New("letters parameter must be exactly 7 characters. it was " + strconv.Itoa(len(letters)) + ".")
+	}
+
+	if !strings.Contains(letters, string(mandatoryChar)) {
+		return errors.New("mandatoryChar parameter must be one of the characters in letters string. " + string(mandatoryChar) + " is not in " + letters)
+	}
+
+	return nil
 }
 
 /*
