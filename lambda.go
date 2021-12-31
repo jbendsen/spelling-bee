@@ -10,8 +10,8 @@ import (
 )
 
 type Params struct {
-	Letters   string
-	Mandatory string
+	Letters   string `json:"letters"`
+	Mandatory string `json:"mandatory"`
 }
 
 func handleRequest(ctx context.Context, event Params) (string, error) {
