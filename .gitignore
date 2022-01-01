@@ -21,5 +21,6 @@ lambda
 spelling-bee
 words
 out.yml
+out.json
 *.zip
 

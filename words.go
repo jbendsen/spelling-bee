@@ -2,55 +2,12 @@ package main
 
 import (
 	"bufio"
-	"encoding/json"
 	"errors"
-	"fmt"
 	"os"
 	"sort"
 	"strconv"
 	"strings"
-	"time"
 )
-
-type Response struct {
-	Letters         string
-	Words           []string
-	MandatoryLetter string
-	ExecutionTimeMs int
-	Created         time.Time
-}
-
-func check(e error) {
-	if e != nil {
-		panic(e)
-	}
-}
-
-func main_old() {
-	fmt.Println(uniqueLettersSorted("Starting"))
-	//dat, err := os.Open("./short.txt")
-
-	fmt.Println(GetMatchingWords("wniougk", 'w'))
-	fmt.Println(GetMatchingWordsResponse("wniougk", 'w'))
-
-}
-func GetMatchingWordsResponse(letters string, mandatoryChar rune) string {
-	start := time.Now()
-	words, err := GetMatchingWords(letters, mandatoryChar)
-	response := Response{
-		Letters:         letters,
-		MandatoryLetter: string(mandatoryChar),
-		Words:           words,
-		Created:         time.Now(),
-		ExecutionTimeMs: int(time.Since(start).Milliseconds()),
-	}
-	j, err := json.Marshal(response)
-	check(err)
-
-	//fmt.Println(string(j))
-	return string(j)
-
-}
 
 func GetMatchingWords(letters string, mandatoryChar rune) ([]string, error) {
 	root := "."
@@ -87,7 +44,6 @@ func GetMatchingWords(letters string, mandatoryChar rune) ([]string, error) {
 
 	for i := 0; i < len(s); i++ {
 		if strings.Contains(letters, uniqueLettersSorted(s[i])) {
-			//fmt.Println("Found a word: ", s[i])
 			if strings.ContainsRune(s[i], mandatoryChar) {
 				result = append(result, s[i])
 			}

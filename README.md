@@ -19,6 +19,15 @@ This invokes the lambda function using AWS CLI.
 ## Next step
 - You may want to inspect the lamda function in the [AWS Console](https://aws.amazon.com/console). 
 - Using the Console you can add an API Gateway trigger to activate the function using http.
+- When deployed invoke URL: [https://....execute-api.eu-west-1.amazonaws.com/default/function-go-function-DaGnyXFmx5pd?letters=abcdefg&mandatory=a](https://xxx.execute-api.eu-west-1.amazonaws.com/default/function-go-function-DaGnyXFmx5pd?letters=abcdefg&mandatory=a)
 
 
+
+## Stuff
+AWS API Gateway Integration Request mapping template:
+
+`{
+    "letters" : "$input.params('letters')",
+    "mandatory" : "$input.params('mandatory')"
+}`
 
