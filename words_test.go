@@ -18,6 +18,12 @@ func TestErrorIfNot7Chars(t *testing.T) {
 	assert.Nil(t, s)
 }
 
+func TestErrorIfNot7CharsDublicates(t *testing.T) {
+	s, err := GetMatchingWords("aabcdef", 'a') //expects error
+	assert.NotNil(t, err)
+	assert.Nil(t, s)
+}
+
 func TestErrorIfNotMandatoryCharContainedInLetters(t *testing.T) {
 	s, err := GetMatchingWords("abcdefg", 'z')
 	assert.NotNil(t, err)
@@ -25,7 +31,7 @@ func TestErrorIfNotMandatoryCharContainedInLetters(t *testing.T) {
 }
 
 func TestWordsMultipleMatches(t *testing.T) {
-	s, err := GetMatchingWords("adefpei", 'a') //expects [add added dad dead deaf fade faded]
+	s, err := GetMatchingWords("adefpzi", 'a') //expects [add added dad dead deaf fade faded]
 	assert.Nil(t, err)
 	assert.Equal(t, len(s), 7)
 	assert.Contains(t, s, "added")
@@ -36,24 +42,3 @@ func TestWordsMultipleMatches(t *testing.T) {
 	assert.Contains(t, s, "fade")
 	assert.Contains(t, s, "faded")
 }
-
-/*
-func TestWordsMultipleMatchesJson(t *testing.T) {
-	s := GetMatchingWordsResponse("adefpei", 'a') //expects [add added dad dead deaf fade faded]
-	fmt.Println(s)
-	var r Response
-	json.Unmarshal([]byte(s), &r)
-
-	assert.Equal(t, r.Letters, "adefpei")
-	assert.Equal(t, r.MandatoryLetter, "a")
-	assert.GreaterOrEqual(t, r.ExecutionTimeMs, 0)
-	assert.Equal(t, len(r.Words), 7)
-	assert.Contains(t, r.Words, "added")
-	assert.Contains(t, r.Words, "add")
-	assert.Contains(t, r.Words, "dad")
-	assert.Contains(t, r.Words, "dead")
-	assert.Contains(t, r.Words, "deaf")
-	assert.Contains(t, r.Words, "fade")
-	assert.Contains(t, r.Words, "faded")
-}
-*/
