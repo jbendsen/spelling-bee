@@ -2,9 +2,11 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"log"
+	"os"
 
-	runtime "github.com/aws/aws-lambda-go/lambda"
+	"github.com/aws/aws-lambda-go/lambda"
 	"github.com/aws/aws-lambda-go/lambdacontext"
 )
 
@@ -40,5 +42,25 @@ func handleRequest(ctx context.Context, params Params) (LambdaResponse, error) {
 }
 
 func main() {
-	runtime.Start(handleRequest)
+	lambda.Start(handleRequest)
+	//trimLocalFile()
+}
+
+//remove lines len>4
+func trimLocalFile() {
+
+	l, err := GetWordlistFromLocalFile()
+	fmt.Println(err)
+
+	f, _ := os.Create("./corncop_trimmed.txt")
+	defer f.Close()
+
+	for _, w := range l {
+		if len(w) > 3 {
+			n3, err := f.WriteString(w + "\n")
+			fmt.Println(err)
+			fmt.Printf("wrote %d bytes\n", n3)
+		}
+	}
+	f.Sync()
 }

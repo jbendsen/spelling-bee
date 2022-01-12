@@ -45,7 +45,7 @@ func GetMatchingWords(letters string, mandatoryChar rune) ([]string, error) {
 			exitErrorf("could not read dictionary from bucket: %s", err.Error())
 		}
 	} else { //running locally
-		dictionary, err = getWordlistFromLocalFile()
+		dictionary, err = GetWordlistFromLocalFile()
 		if err != nil {
 			exitErrorf("could not read dictionary from local file: %s", err.Error())
 		}
@@ -61,17 +61,30 @@ func getWordFromLetters(letters string, mandatoryChar rune, wordlist []string) [
 	result := make([]string, 0)
 
 	for i := 0; i < len(wordlist); i++ {
-		if strings.Contains(letters, uniqueLettersSorted(wordlist[i])) {
+		word := uniqueLettersSorted(wordlist[i])
+
+		match := true
+		//se if each char in word is found in letters
+		for _, char := range word {
+			if !strings.ContainsRune(letters, char) {
+				match = false
+				break
+			}
+		}
+
+		//does the word contain the mandatory char?
+		if match {
 			if strings.ContainsRune(wordlist[i], mandatoryChar) {
 				result = append(result, wordlist[i])
 			}
 		}
+
 	}
 	return result
 }
 
 //reads words from local file and returns a string array with one line per slot
-func getWordlistFromLocalFile() ([]string, error) {
+func GetWordlistFromLocalFile() ([]string, error) {
 	fn := LOCALFILENAME
 	dat, err := os.Open(fn) //"./corncob_lowercase.txt")
 
