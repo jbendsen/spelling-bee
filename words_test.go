@@ -30,8 +30,8 @@ func TestErrorIfNotMandatoryCharContainedInLetters(t *testing.T) {
 	assert.Nil(t, s)
 }
 
-func TestWordsMultipleMatches(t *testing.T) {
-	s, err := GetMatchingWords("adefpzi", 'a') //expects [add added dad dead deaf fade faded]
+func TestWordsMultipleMatchesWithCasing(t *testing.T) {
+	s, err := GetMatchingWords("adefpzi", 'A') //expects [add added dad dead deaf fade faded]
 	assert.Nil(t, err)
 	assert.Equal(t, 18, len(s))
 	assert.Contains(t, s, "added")

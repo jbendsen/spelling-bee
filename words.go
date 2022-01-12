@@ -7,6 +7,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
+	"unicode"
+
 	"sort"
 	"strconv"
 	"strings"
@@ -28,6 +30,8 @@ func exitErrorf(msg string, args ...interface{}) {
 }
 
 func GetMatchingWords(letters string, mandatoryChar rune) ([]string, error) {
+	letters = strings.ToLower(letters)
+	mandatoryChar = unicode.ToLower(mandatoryChar)
 
 	err := verify(letters, mandatoryChar)
 	if err != nil {
